@@ -3,16 +3,20 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"main/internal/cache"
 	"main/internal/configs"
 	"main/internal/db"
 	"main/internal/kafka/consumer"
+	"main/internal/logger"
 	"main/internal/types"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
+	logger.InitLogger()
+
 	configs.InitConfig()
 	c := cache.NewCache()
 	d := db.DataBase{}
@@ -30,7 +34,7 @@ func main() {
 
 	tmpl, err := template.ParseFiles("../static/index.html")
 	if err != nil {
-		log.Println(err)
+		log.Err(err)
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		tmpl.Execute(w, types.Order{})
@@ -38,12 +42,14 @@ func main() {
 	http.HandleFunc("/order", func(w http.ResponseWriter, req *http.Request) {
 		uid := req.URL.Query().Get("uid")
 		order, err := c.GetOrderById(uid)
-		log.Printf("ORDER: %#v\n", order)
+
+		log.Debug().Msg(fmt.Sprintf("ORDER: %#v\n", order))
+
 		if err != nil {
-			log.Println("no order with that uid")
+			log.Info().Msg("no order with that uid")
 		}
 		tmpl.Execute(w, order)
 
 	})
-	log.Fatalln(http.ListenAndServe(":8000", nil))
+	log.Err(http.ListenAndServe(":8000", nil))
 }

@@ -1,9 +1,11 @@
 package main
 
 import (
-	"log"
 	"main/internal/configs"
+	"main/internal/logger"
 	"os"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -17,7 +19,7 @@ func StartProducer(data []byte) {
 	})
 
 	if err != nil {
-		log.Fatalln("couldnt start kafka producer", err)
+		log.Err(err)
 	}
 	defer p.Close()
 	topic := conf.Kafka.Topic
@@ -27,15 +29,16 @@ func StartProducer(data []byte) {
 	}, nil)
 
 	if err != nil {
-		log.Fatalln("couldnt produce a message, err:", err)
+		log.Err(err)
 	}
 	p.Flush(-1)
 }
 
 func main() {
+	logger.InitLogger()
 	data, err := os.ReadFile("model.json")
 	if err != nil {
-		log.Println(err)
+		log.Err(err)
 	}
 	StartProducer(data)
 }

@@ -26,7 +26,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	f, err := os.Create("test/testdata/" + "model" + strconv.Itoa(int(rand.Int32()%100)) + string(".json"))
+	f, err := os.Create("testdata/" + "model" + strconv.Itoa(int(rand.Int32()%100)) + string(".json"))
 	if err != nil {
 		panic(err)
 	}

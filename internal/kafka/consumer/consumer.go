@@ -1,11 +1,13 @@
 package consumer
 
 import (
-	"log"
+	"fmt"
 	"main/internal/cache"
 	"main/internal/configs"
 	"main/internal/db"
 	"main/internal/types"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -21,31 +23,31 @@ func StartConsumer(database db.DataBase, cache_ *cache.Cache) {
 	})
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Err(err)
 	}
 	defer c.Close()
 
 	topic := conf.Kafka.Topic
 	err = c.SubscribeTopics([]string{topic}, nil)
 	if err != nil {
-		log.Println("couldnt subscribe to the topic with a name", topic)
+		log.Err(err)
 	} else {
-		log.Println("subscribed to the topic with a name", topic)
+		log.Debug().Msg("subscribed to the topic with a name " + topic)
 	}
 
 	for {
 		msg, err := c.ReadMessage(-1)
 		if err != nil {
-			log.Println(err)
+			log.Err(err)
 			continue
 		}
 		order, err := types.ReadJSON(msg.Value)
 		if err != nil {
-			log.Println("Error decoding message,", err)
+			log.Err(err)
 		} else {
 			database.InsertData(order)
 			cache_.SaveData(order)
 		}
-		log.Printf("Received Order: %+v\n", order)
+		log.Info().Msg(fmt.Sprintf("Received Order: %+v", order))
 	}
 }

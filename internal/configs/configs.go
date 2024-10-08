@@ -1,7 +1,7 @@
 package configs
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 
 	"github.com/spf13/viper"
 )
@@ -24,15 +24,15 @@ type Config struct {
 func InitConfig() {
 	viper.SetConfigFile("config.yaml")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalln("config file is not found", err)
+		log.Err(err)
 	}
-	log.Println("Using config file 'config.yaml'")
+	log.Info().Msg("Using config file 'config.yaml'")
 }
 
 func GetConfig() Config {
 	var config Config
 	if err := viper.Unmarshal(&config); err != nil {
-		panic(err)
+		log.Err(err)
 	}
 	return config
 }
