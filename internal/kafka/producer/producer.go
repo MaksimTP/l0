@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"main/internal/configs"
 	"main/internal/logger"
 	"os"
@@ -30,13 +31,21 @@ func StartProducer(data []byte) {
 
 	if err != nil {
 		log.Err(err)
+	} else {
+		log.Info().Msg(fmt.Sprintf("Produced e message: %s", string(data)))
 	}
 	p.Flush(-1)
 }
 
 func main() {
 	logger.InitLogger()
-	data, err := os.ReadFile("model.json")
+	filename := ""
+	if len(os.Args) > 1 {
+		filename = os.Args[len(os.Args)-1]
+	} else {
+		filename = "model.json"
+	}
+	data, err := os.ReadFile("testdata/" + filename)
 	if err != nil {
 		log.Err(err)
 	}

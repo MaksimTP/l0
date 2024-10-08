@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  order_service:
+    build: ./
+    command: ./order_service
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+      - kafka
+
+  db:
+    image: postgres:16
+    ports:
+      - 5432:5432
+    volumes:
+      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=wb_lvl0
+  kafka:
+    image: apache/kafka:latest
+    ports:
+      - 9092:9092

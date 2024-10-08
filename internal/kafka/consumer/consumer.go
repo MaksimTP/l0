@@ -12,7 +12,7 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func StartConsumer(database db.DataBase, cache_ *cache.Cache) {
+func StartConsumer(database db.IDataBase, cache_ cache.Storage) {
 
 	conf := configs.GetConfig()
 

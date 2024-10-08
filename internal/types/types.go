@@ -26,7 +26,7 @@ type Delivery struct {
 	Phone   string `json:"phone" fake:"{phone}"`
 	Zip     string `json:"zip" fake:"{zip}"`
 	City    string `json:"city" fake:"{city}"`
-	Address string `json:"address" fake:"{address}"`
+	Address string `json:"address" fake:"{randomstring:[moscow, spb, tomsk]}"`
 	Region  string `json:"region" fake:"{region}"`
 	Email   string `json:"email" fake:"{email}"`
 }
@@ -48,7 +48,7 @@ type Item struct {
 type Payment struct {
 	Transaction  string `json:"transaction" fake:"{regex:[a-zA-Z0-9]{14}}test"`
 	RequestID    string `json:"request_id"`
-	Currency     string `json:"currency" fake:"{currency}"`
+	Currency     string `json:"currency" fake:"{randomstring:[USD,RUB,EUR]}"`
 	Provider     string `json:"provider" fake:"{company}"`
 	Amount       int64  `json:"amount"`
 	PaymentDt    int64  `json:"payment_dt"`

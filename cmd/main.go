@@ -18,8 +18,8 @@ func main() {
 	logger.InitLogger()
 
 	configs.InitConfig()
-	c := cache.NewCache()
-	d := db.DataBase{}
+	c := cache.New()
+	d := db.New()
 
 	conf := configs.GetConfig()
 
@@ -32,7 +32,7 @@ func main() {
 	c.RestoreDataFromDB(d)
 	go consumer.StartConsumer(d, c)
 
-	tmpl, err := template.ParseFiles("../static/index.html")
+	tmpl, err := template.ParseFiles("static/index.html")
 	if err != nil {
 		log.Err(err)
 	}
