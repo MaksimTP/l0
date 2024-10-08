@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"main/model"
+	"main/internal/types"
 
 	_ "github.com/lib/pq"
 )
@@ -74,7 +74,7 @@ func (d *DataBase) GetNextIdToInsert(tableName string) int {
 	return id
 }
 
-func (d *DataBase) InsertData(data model.Order) {
+func (d *DataBase) InsertData(data types.Order) {
 
 	deliveryID := d.GetNextIdToInsert("delivery")
 	_, err := d.db.Exec(insertStatementDelivery, deliveryID, data.Delivery.Name, data.Delivery.Phone, data.Delivery.Zip, data.Delivery.City, data.Delivery.Address, data.Delivery.Region, data.Delivery.Email)
@@ -106,8 +106,8 @@ func (d *DataBase) InsertData(data model.Order) {
 	}
 }
 
-func (d *DataBase) GetAllData() []model.Order {
-	orders := make([]model.Order, 0)
+func (d *DataBase) GetAllData() []types.Order {
+	orders := make([]types.Order, 0)
 	rows, err := d.db.Query(`SELECT * FROM "order" as o
 	JOIN delivery as d on o.delivery_id = d.id
 	JOIN payment as p on o.payment_id = p.id
@@ -128,11 +128,11 @@ func (d *DataBase) GetAllData() []model.Order {
 		}
 
 		if is_new_order {
-			orders = append(orders, model.Order{OrderUid: order_uid, TrackNumber: track_number, Entry: entry, Delivery: model.Delivery{Name: name, Phone: phone, Zip: zip, City: city, Address: address, Region: region, Email: email}, Payment: model.Payment{Transaction: transaction, RequestID: request_id, Currency: currency, Provider: provider, Amount: amount, PaymentDt: payment_dt, Bank: bank, DeliveryCost: delivery_cost, GoodsTotal: goods_total, CustomFee: custom_fee}, Items: []model.Item{{ChrtID: chrt_id, TrackNumber: track_number1, Price: price, Rid: rid, Name: name, Sale: sale, Size: size, TotalPrice: total_price, NmID: nm_id, Brand: brand, Status: status}}, Locale: locale, InternalSignature: internal_signature, CustomerID: customer_id, DeliveryService: delivery_service, Shardkey: shardkey, SmID: sm_id, DateCreated: date_created, OofShard: oof_shard})
+			orders = append(orders, types.Order{OrderUid: order_uid, TrackNumber: track_number, Entry: entry, Delivery: types.Delivery{Name: name, Phone: phone, Zip: zip, City: city, Address: address, Region: region, Email: email}, Payment: types.Payment{Transaction: transaction, RequestID: request_id, Currency: currency, Provider: provider, Amount: amount, PaymentDt: payment_dt, Bank: bank, DeliveryCost: delivery_cost, GoodsTotal: goods_total, CustomFee: custom_fee}, Items: []types.Item{{ChrtID: chrt_id, TrackNumber: track_number1, Price: price, Rid: rid, Name: name, Sale: sale, Size: size, TotalPrice: total_price, NmID: nm_id, Brand: brand, Status: status}}, Locale: locale, InternalSignature: internal_signature, CustomerID: customer_id, DeliveryService: delivery_service, Shardkey: shardkey, SmID: sm_id, DateCreated: date_created, OofShard: oof_shard})
 		} else {
 			for k, order := range orders {
 				if order.OrderUid == order_uid {
-					orders[k].Items = append(orders[k].Items, model.Item{ChrtID: chrt_id, TrackNumber: track_number1, Price: price, Rid: rid, Name: name, Sale: sale, Size: size, TotalPrice: total_price, NmID: nm_id, Brand: brand, Status: status})
+					orders[k].Items = append(orders[k].Items, types.Item{ChrtID: chrt_id, TrackNumber: track_number1, Price: price, Rid: rid, Name: name, Sale: sale, Size: size, TotalPrice: total_price, NmID: nm_id, Brand: brand, Status: status})
 				}
 			}
 		}

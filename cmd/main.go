@@ -3,10 +3,10 @@ package main
 import (
 	"html/template"
 	"log"
-	"main/cache"
-	"main/db"
-	"main/kafka/consumer"
-	"main/model"
+	"main/internal/cache"
+	"main/internal/db"
+	"main/internal/kafka/consumer"
+	"main/internal/types"
 	"net/http"
 )
 
@@ -17,12 +17,12 @@ func main() {
 	c.RestoreDataFromDB(d)
 	go consumer.StartConsumer(d, c)
 
-	tmpl, err := template.ParseFiles("static/index.html")
+	tmpl, err := template.ParseFiles("../static/index.html")
 	if err != nil {
 		log.Println(err)
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		tmpl.Execute(w, model.Order{})
+		tmpl.Execute(w, types.Order{})
 	})
 	http.HandleFunc("/order", func(w http.ResponseWriter, req *http.Request) {
 		uid := req.URL.Query().Get("uid")

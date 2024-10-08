@@ -2,9 +2,9 @@ package consumer
 
 import (
 	"log"
-	"main/cache"
-	"main/db"
-	"main/model"
+	"main/internal/cache"
+	"main/internal/db"
+	"main/internal/types"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
@@ -41,7 +41,7 @@ func StartConsumer(database db.DataBase, cache_ *cache.Cache) {
 			log.Println(err)
 			continue
 		}
-		order, err := model.ReadJSON(msg.Value)
+		order, err := types.ReadJSON(msg.Value)
 		if err != nil {
 			log.Println("Error decoding message,", err)
 		} else {
