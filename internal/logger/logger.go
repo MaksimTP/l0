@@ -5,6 +5,5 @@ import (
 )
 
 func InitLogger() {
-	// log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	log.Info().Msg("Logging has been started")
 }
