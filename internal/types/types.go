@@ -27,7 +27,7 @@ type Delivery struct {
 	Zip     string `json:"zip" fake:"{zip}"`
 	City    string `json:"city" fake:"{city}"`
 	Address string `json:"address" fake:"{randomstring:[moscow, spb, tomsk]}"`
-	Region  string `json:"region" fake:"{region}"`
+	Region  string `json:"region" fake:"{randomstring:[some_region_1, region_2, region_3]}"`
 	Email   string `json:"email" fake:"{email}"`
 }
 
