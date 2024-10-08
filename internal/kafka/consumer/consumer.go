@@ -3,22 +3,20 @@ package consumer
 import (
 	"log"
 	"main/internal/cache"
+	"main/internal/configs"
 	"main/internal/db"
 	"main/internal/types"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-const (
-	kafkaServer  = "localhost:9092"
-	kafkaTopic   = "orders"
-	kafkaGroupId = "wb_product_service"
-)
-
 func StartConsumer(database db.DataBase, cache_ *cache.Cache) {
+
+	conf := configs.GetConfig()
+
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": kafkaServer,
-		"group.id":          kafkaGroupId,
+		"bootstrap.servers": conf.Kafka.Server,
+		"group.id":          conf.Kafka.GroupID,
 		"auto.offset.reset": "earliest",
 	})
 
@@ -27,7 +25,7 @@ func StartConsumer(database db.DataBase, cache_ *cache.Cache) {
 	}
 	defer c.Close()
 
-	topic := kafkaTopic
+	topic := conf.Kafka.Topic
 	err = c.SubscribeTopics([]string{topic}, nil)
 	if err != nil {
 		log.Println("couldnt subscribe to the topic with a name", topic)

@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"main/internal/cache"
+	"main/internal/configs"
 	"main/internal/db"
 	"main/internal/kafka/consumer"
 	"main/internal/types"
@@ -11,9 +13,18 @@ import (
 )
 
 func main() {
+	configs.InitConfig()
 	c := cache.NewCache()
 	d := db.DataBase{}
-	d.Connect("postgres", db.DbInfo)
+
+	conf := configs.GetConfig()
+
+	dbInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		conf.Postgres.Host, conf.Postgres.Port, conf.Postgres.User, conf.Postgres.Password, conf.Postgres.Dbname)
+
+	d.Connect("postgres", dbInfo)
+	defer d.Close()
+
 	c.RestoreDataFromDB(d)
 	go consumer.StartConsumer(d, c)
 

@@ -2,27 +2,15 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"main/internal/types"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "qwerty"
-	dbname   = "wb_lvl0"
-)
-
 type DataBase struct {
 	db *sql.DB
 }
-
-var DbInfo string = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-	host, port, user, password, dbname)
 
 func (d *DataBase) Connect(driverName string, dbInfo string) {
 	db, err := sql.Open(driverName, dbInfo)

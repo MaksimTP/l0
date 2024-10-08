@@ -2,26 +2,25 @@ package main
 
 import (
 	"log"
+	"main/internal/configs"
 	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-const (
-	kafkaServer = "localhost:9092"
-	kafkaTopic  = "orders"
-)
-
 func StartProducer(data []byte) {
+	configs.InitConfig()
+	conf := configs.GetConfig()
+
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": kafkaServer,
+		"bootstrap.servers": conf.Kafka.Server,
 	})
 
 	if err != nil {
 		log.Fatalln("couldnt start kafka producer", err)
 	}
 	defer p.Close()
-	topic := kafkaTopic
+	topic := conf.Kafka.Topic
 	err = p.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          data,
