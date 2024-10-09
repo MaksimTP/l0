@@ -25,7 +25,7 @@ type Cache struct {
 }
 
 func (c *Cache) SaveData(data types.Order) {
-	if c.GetSize() > 200*megaByte {
+	if c.GetSize() > 300*megaByte {
 		clear(c.cachedData)
 	}
 	c.m.RLock()
